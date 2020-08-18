@@ -1,0 +1,79 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: wqvc-video
+  namespace: ingress-nginx
+  labels:
+    app: wqvc-video
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: wqvc-video
+  template:
+    metadata:
+      labels:
+        app: wqvc-video
+    spec:
+      containers:
+        - name: wqvc-video
+          image: rnsk3626/wqvc-video
+          ports:
+            - containerPort: 7001
+        - name: wqvc-nginx
+          image: rnsk3626/wqvc-nginx
+          ports:
+            - containerPort: 8443
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: wqvc-video-svc
+  namespace: ingress-nginx
+  labels:
+    app: wqvc-video
+spec:
+  ports:
+    - port: 443 
+      targetPort: 7001
+      protocol: TCP
+      name: https
+  selector:
+    app: wqvc-video
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: wqvc-nginx-svc
+  namespace: ingress-nginx
+  labels:
+    app: wqvc-video
+spec:
+  ports:
+    - port: 443 
+      targetPort: 8443
+  selector:
+    app: wqvc-video
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: wqvc-video-lb
+  namespace: ingress-nginx
+  labels:
+    app: wqvc-video
+spec:
+  type: LoadBalancer
+  ports:
+  - port: 443
+    targetPort: 7001
+    protocol: TCP
+    name: https
+  - port: 7001
+    targetPort: 7001
+    name: socket
+  - port: 8443
+    targetPort: 8443
+    name: nginx
+  selector:
+    app: wqvc-video

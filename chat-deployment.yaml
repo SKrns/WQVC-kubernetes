@@ -1,0 +1,36 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: wqvc-chat
+  namespace: ingress-nginx
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: wqvc-chat
+  template:
+    metadata:
+      labels:
+        app: wqvc-chat
+    spec:
+      containers:
+        - name: wqvc-chat
+          image: rnsk3626/wqvc-chat
+          ports:
+            - containerPort: 7002
+        - name: redis
+          image: redis
+          ports:
+            - containerPort: 6379
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: wqvc-chat-svc
+  namespace: ingress-nginx
+spec:
+  ports:
+    - port: 80
+      targetPort: 7002
+  selector:
+    app: wqvc-chat
