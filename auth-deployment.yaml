@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
       - name: wqvc-auth
-        image: rnsk3626/wqvc-auth
+        image: rnsk3626/wqvc-auth:1
         ports:
         - containerPort: 7000
 ---

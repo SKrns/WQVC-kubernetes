@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
         - name: wqvc-chat
-          image: rnsk3626/wqvc-chat
+          image: rnsk3626/wqvc-chat:1
           ports:
             - containerPort: 7002
         - name: redis
